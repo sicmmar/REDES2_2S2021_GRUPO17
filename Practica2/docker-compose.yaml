@@ -1,0 +1,44 @@
+version : "3.7"
+services:  
+    server1:
+        container_name: server1
+        restart: always
+        build: ./service/server
+        ports:
+            - "7050:7050"
+        environment:
+            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - SERVER=200113057
+        networks: 
+            - service_network
+
+    server2:
+        container_name: server2
+        restart: always
+        build: ./service/server
+        ports:
+            - "7051:7050"
+        environment:
+            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - SERVER=201313828
+        networks: 
+            - service_network
+
+    server3:
+        container_name: server3
+        restart: always
+        build: ./service/server
+        ports:
+            - "7052:7050"
+        environment:
+            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - SERVER=201612101
+        networks: 
+            - service_network
+
+networks:
+  service_network:
+    driver: "bridge"
+    ipam:
+        config:
+            - subnet: 172.35.77.0/24
