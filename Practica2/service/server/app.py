@@ -17,7 +17,7 @@ collection = db.estudiantes
 
 @app.route('/')
 def result():
-    return str("Jau")
+    return str("Jau desde Server: " + os.environ['SERVER'])
 
 
 @app.route('/', methods=['POST'])

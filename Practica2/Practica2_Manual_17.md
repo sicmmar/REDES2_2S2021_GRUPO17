@@ -24,6 +24,7 @@ Integrantes
         * [Insertar registro](#insertar-registro)
         * [Obtener registros](#obtener-registros)
     * [Dockerfile](#dockerfile-servidor)
+* [Load Balancer (nginx)](#load-balancer)
 * [Docker Compose](#docker-compose)
     * [Definición de redes](#definición-de-redes)
     * [Definición de servicios](#definición-de-servicios)
@@ -79,7 +80,7 @@ En dado caso el almacenamiento sea correcto, devuelve la siguiente respuesta:
 
 ```json
 {
-    "status": 200, 
+    "status": 200,
     "mensaje": "mensaje guardado"
 }
 ```
@@ -88,7 +89,7 @@ Caso contrario,
 
 ```json
 {
-    "status": 403, 
+    "status": 403,
     "mensaje": "error de guardado"
 }
 ```
@@ -103,7 +104,7 @@ Caso contrario,
 >             "nombre": request.json.get('nombre'),
 >             "curso": request.json.get('curso'),
 >             "mensaje": request.json.get('mensaje'),
->            "servidor": os.environ['SERVER'] 
+>            "servidor": os.environ['SERVER']
 >         }
 >     )
 >     if respuesta: return jsonify({'status': 200, 'mensaje': 'mensaje guardado'})
@@ -116,7 +117,7 @@ Para obtener los registros de la base de datos, se utiliza la dirección [`PUT/ 
 
 * Si el cuerpo se entrega vacío, la petición devuelve los registros de **cualquier carnet** en un arreglo tipo JSON
 
-* Si el cuerpo de la petición es 
+* Si el cuerpo de la petición es
     ```json
     {
         "carnet":"..."
@@ -169,6 +170,34 @@ EXPOSE 7050
 CMD python app.py
 ```
 
+# Load Balancer
+
+Se utilizó nginx open source [<img src=".images/NGINX-product-icon.svg" width="15"/>](.images/NGINX-product-icon.svg), con la [imágen](https://hub.docker.com/_/nginx) de docker hub como base.
+
+El archivo de configuración para realizar el balanceo es el siguiente
+
+```yaml
+# pool de servidores hacia los que se hará el balanceo
+# al no tener un peso se hace una distribución homogénea
+upstream backend_servers {
+    server server1:7050;
+    server server2:7050;
+    server server3:7050;
+}
+
+
+server {
+# el servidor estará escuchando en el puerto 80
+    listen 80;
+
+# la ruta de escucha
+    location / {
+# y la referencia al pool correspondiente a la ruta
+        proxy_pass http://backend_servers/;
+    }
+}
+```
+
 # Docker Compose
 
 El archivo [docker-compose.yaml](docker-compose.yaml) se utiliza para levantar todos los contenedores mencionados, conectar entre los que sea necesario y crear las tres diferentes redes.
@@ -180,8 +209,8 @@ Dentro del espacio de `networks:` del archivo de docker-compose
 * Red de service
 
 ```yml
-#nombre de la red "service_network"
-service_network:
+#nombre de la red "backendNetwork"
+backendNetwork:
     #tipo de driver "bridge"
     driver: "bridge"
     #configurar la red a utilizar con su máscara de red
@@ -203,16 +232,13 @@ server1:
         restart: always
         # dirección donde se encuentra Dockerfile para construir la imagen
         build: ./service/server
-        # puertos a exponer HOST:CONTAINER
-        ports:
-            - "7050:7050"
         # variables de entorno como URI de mongo, y el ID del server
         environment:
             - URI_MONGO=mongodb+srv
             - SERVER=200113057
         # la red a la que estará conectado el contenedor
-        networks: 
-            - service_network
+        networks:
+            - backendNetwork
 
     # se repite lo mismo para las réplicas de los servidores
 
@@ -220,23 +246,30 @@ server1:
         container_name: server2
         restart: always
         build: ./service/server
-        ports:
-            - "7051:7050"
         environment:
             - URI_MONGO=mongodb+srv
             - SERVER=201313828
-        networks: 
-            - service_network
+        networks:
+            - backendNetwork
 
     server3:
         container_name: server3
         restart: always
         build: ./service/server
-        ports:
-            - "7052:7050"
         environment:
             - URI_MONGO=mongodb+srv
             - SERVER=201612101
-        networks: 
-            - service_network
+        networks:
+            - backendNetwork
+
+    balancer:
+        container_name: balancer
+        # nombre de la imágen (en dockerhub) en la que está basado el contenedor
+        image: nginx
+        # mapeo de volumen para poder hacer cambios desde fuera del container
+        # punto de montaje para apuntar a la ruta origen
+        volumes:
+            - ./service/balancer/conf:/etc/nginx/conf.d
+        networks:
+            - backendNetwork
 ```
