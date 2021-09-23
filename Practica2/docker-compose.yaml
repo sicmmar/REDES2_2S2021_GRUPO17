@@ -5,30 +5,33 @@ services:
         restart: always
         build: ./service/server
         environment:
-            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=200113057
         networks:
             - backendNetwork
+            - databaseNetwork
 
     server2:
         container_name: server2
         restart: always
         build: ./service/server
         environment:
-            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=201313828
         networks:
             - backendNetwork
+            - databaseNetwork
 
     server3:
         container_name: server3
         restart: always
         build: ./service/server
         environment:
-            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=201612101
         networks:
             - backendNetwork
+            - databaseNetwork
 
     balancer:
         container_name: balancer
@@ -38,9 +41,29 @@ services:
         networks:
             - backendNetwork
 
+    database:
+        container_name: database
+        image : mongo        
+        environment:
+            - PUID=1000
+            - PGID=1000
+        restart: unless-stopped
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=grupo17
+            - MONGO_INITDB_ROOT_PASSWORD=grupo17
+        networks:
+            - databaseNetwork
+        
+    
+
 networks:
     backendNetwork:
         driver: "bridge"
         ipam:
             config:
                 - subnet: 172.35.77.0/24
+    databaseNetwork:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.10.17.0/24
