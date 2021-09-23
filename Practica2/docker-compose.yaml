@@ -1,0 +1,46 @@
+version : "3.7"
+services:
+    server1:
+        container_name: server1
+        restart: always
+        build: ./service/server
+        environment:
+            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - SERVER=200113057
+        networks:
+            - backendNetwork
+
+    server2:
+        container_name: server2
+        restart: always
+        build: ./service/server
+        environment:
+            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - SERVER=201313828
+        networks:
+            - backendNetwork
+
+    server3:
+        container_name: server3
+        restart: always
+        build: ./service/server
+        environment:
+            - URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            - SERVER=201612101
+        networks:
+            - backendNetwork
+
+    balancer:
+        container_name: balancer
+        image: nginx
+        volumes:
+            - ./service/balancer/conf:/etc/nginx/conf.d
+        networks:
+            - backendNetwork
+
+networks:
+    backendNetwork:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 172.35.77.0/24
