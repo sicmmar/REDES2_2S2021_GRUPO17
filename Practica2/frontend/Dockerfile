@@ -1,5 +1,5 @@
 #base image
-FROM node:latest
+FROM node:12-alpine
 
 WORKDIR /usr/src/app
 ARG NODE_ENV
