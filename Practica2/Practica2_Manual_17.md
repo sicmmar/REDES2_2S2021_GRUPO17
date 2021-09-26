@@ -170,6 +170,24 @@ EXPOSE 7050
 CMD python app.py
 ```
 
+# Base de Datos
+
+Como motor de base de datos fue usado MongoDB [<img src=".images/mongodb_logo_icon.svg" width="35"/>](.images/NGINX-product-icon.svg), con la [imágen](https://hub.docker.com/_/mongo/) ubicada en docker hub como base.
+
+Para construir el docker container de MongoDB se uso la siguiente configuracion en el archivo docker-compose.yml.
+
+```yaml
+container_name: database
+image : mongo        
+environment:
+    - PUID=1000
+    - PGID=1000
+    - MONGO_INITDB_ROOT_USERNAME=grupo17
+    - MONGO_INITDB_ROOT_PASSWORD=grupo17
+restart: unless-stopped
+```
+Las variables de entorno "MONGO_INITDB_ROOT_USERNAME" y "MONGO_INITDB_ROOT_PASSWORD" fueron usadas para definir el usuario y password para la autentificación al conectarse con la base de datos.
+
 # Load Balancer
 
 Se utilizó nginx open source [<img src=".images/NGINX-product-icon.svg" width="15"/>](.images/NGINX-product-icon.svg), con la [imágen](https://hub.docker.com/_/nginx) de docker hub como base.
@@ -217,6 +235,14 @@ backendNetwork:
     ipam:
         config:
             - subnet: 172.35.77.0/24
+#nombre de la red "databaseNetwork"
+databaseNetwork:
+        #tipo de driver "bridge"
+        driver: "bridge"
+        #configurar la red a utilizar con su máscara de red
+        ipam:
+            config:
+                - subnet: 10.10.17.0/24
 ```
 
 ## Definición de servicios
@@ -234,11 +260,13 @@ server1:
         build: ./service/server
         # variables de entorno como URI de mongo, y el ID del server
         environment:
-            - URI_MONGO=mongodb+srv
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=200113057
         # la red a la que estará conectado el contenedor
         networks:
             - backendNetwork
+            #Se agrego la red "databaseNetwork" para que el servidor pueda acceder al contenedor de la base de datos
+            - databaseNetwork
 
     # se repite lo mismo para las réplicas de los servidores
 
@@ -247,20 +275,22 @@ server1:
         restart: always
         build: ./service/server
         environment:
-            - URI_MONGO=mongodb+srv
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=201313828
         networks:
             - backendNetwork
+            - databaseNetwork
 
     server3:
         container_name: server3
         restart: always
         build: ./service/server
         environment:
-            - URI_MONGO=mongodb+srv
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=201612101
         networks:
             - backendNetwork
+            - databaseNetwork
 
     balancer:
         container_name: balancer
@@ -272,4 +302,19 @@ server1:
             - ./service/balancer/conf:/etc/nginx/conf.d
         networks:
             - backendNetwork
+    
+    database:
+        container_name: database
+        # nombre de la imágen (en dockerhub) en la que está basado el contenedor
+        image : mongo        
+        # declaracion de variables de entorno como el usuario y contraseña para autentificación
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - MONGO_INITDB_ROOT_USERNAME=grupo17
+            - MONGO_INITDB_ROOT_PASSWORD=grupo17
+        restart: unless-stopped
+        # la red a la que estará conectado el contenedor
+        networks:
+            - databaseNetwork
 ```

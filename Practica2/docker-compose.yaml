@@ -47,10 +47,9 @@ services:
         environment:
             - PUID=1000
             - PGID=1000
-        restart: unless-stopped
-        environment:
             - MONGO_INITDB_ROOT_USERNAME=grupo17
             - MONGO_INITDB_ROOT_PASSWORD=grupo17
+        restart: unless-stopped
         networks:
             - databaseNetwork
         
