@@ -8,8 +8,8 @@ services:
             - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=200113057
         networks:
-            - backendNetwork
-            - databaseNetwork
+            - service_network
+            - db_network
 
     server2:
         container_name: server2
@@ -19,8 +19,8 @@ services:
             - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=201313828
         networks:
-            - backendNetwork
-            - databaseNetwork
+            - service_network
+            - db_network
 
     server3:
         container_name: server3
@@ -30,8 +30,8 @@ services:
             - URI_MONGO=mongodb://grupo17:grupo17@database:27017
             - SERVER=201612101
         networks:
-            - backendNetwork
-            - databaseNetwork
+            - service_network
+            - db_network
 
     balancer:
         container_name: balancer
@@ -39,7 +39,8 @@ services:
         volumes:
             - ./service/balancer/conf:/etc/nginx/conf.d
         networks:
-            - backendNetwork
+            - service_network
+            - frontend_network
 
     database:
         container_name: database
@@ -51,18 +52,30 @@ services:
             - MONGO_INITDB_ROOT_PASSWORD=grupo17
         restart: unless-stopped
         networks:
-            - databaseNetwork
+            - db_network
+    
+    frontend:
+        container_name: frontend
+        restart: always
+        build: ./frontend
+        networks:
+            - frontend_network
         
     
 
 networks:
-    backendNetwork:
+    service_network:
         driver: "bridge"
         ipam:
             config:
                 - subnet: 172.35.77.0/24
-    databaseNetwork:
+    db_network:
         driver: "bridge"
         ipam:
             config:
                 - subnet: 10.10.17.0/24
+    frontend_network:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 192.168.57.0/24
