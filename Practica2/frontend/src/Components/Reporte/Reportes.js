@@ -11,7 +11,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
 import Button from '@material-ui/core/Button';
+import axios from 'axios';
 import Reporte from './Reporte';
+import { toast } from 'react-toastify';
+const serversAddr = require('../serversAddr');
 
 
 function PaperComponent(props) {
@@ -38,6 +41,28 @@ const Reportes = () => {
     useEffect(() => {
         // Aqui la peticion para obtener el listado de proyectos y asignarlos como se hace abajo con el ejemplo
 
+        const endpoint = 'http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/';
+        axios.put(endpoint, {})
+        .then((response) => {
+
+            vaciarListaOriginal();
+
+            response.forEach(element => {
+                listaOriginal.push(element);
+            });
+            if (child1.current != null) {
+                child1.current.removeRow();
+                child1.current.agregar_datos(listaOriginal);
+            }
+
+        })
+        .catch((err) => {
+            toast.error("v( ‘.’ )v", { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
+            console.log('Error en el request al endpoint ' + endpoint);
+            console.log(err);
+        });
+
+        /* Esto va comentado?
         vaciarListaOriginal();
         procs.forEach(element => {
             listaOriginal.push(element);
@@ -45,7 +70,8 @@ const Reportes = () => {
         if (child1.current != null) {
             child1.current.removeRow();
             child1.current.agregar_datos(listaOriginal);
-        }
+        }*/
+
     },[]);
 
     const handleChange = (event) => {
