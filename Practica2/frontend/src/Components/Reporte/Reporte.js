@@ -93,18 +93,23 @@ const Reporte = ({ reporte}) => {
     }
 
     if (valido) {
-      axios.post('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/existUser', { username: valuesUser.carnet })
-        .then(response => {
-          if (response.data.exist === '0') {
-            axios.post('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/crearUsuario', { value1: valuesUser.carnet, value2: valuesUser.name, value3: valuesUser.cursoProyecto, value4: valuesUser.cuerpo })
-              .then(response => {
-                setActivarBotonGuardar(false);
-                toast.success("Se a enviado el reporte", { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
-              })
-          } else {
-            toast.error("Error al enviar el reporte", { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
+
+      const endpoint = 'http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/';
+
+      axios.post(endpoint, { carnet: valuesUser.carnet, nombre: valuesUser.name, curso: valuesUser.cursoProyecto, mensaje: valuesUser.cuerpo })
+        .then((result) => {
+          if(result.status === 200){
+            setActivarBotonGuardar(false);
+            toast.success("Se a enviado el reporte", { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
+          }else{
+            toast.error("Error al enviar el reporte", { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });  
           }
         })
+        .catch((err)=>{
+          toast.error("v( ‘.’ )v", { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
+            console.log('Error en el request al endpoint ' + endpoint);
+            console.log(err);
+        });
     }
   };
 

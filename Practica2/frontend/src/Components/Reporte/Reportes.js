@@ -13,6 +13,8 @@ import Draggable from 'react-draggable';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import Reporte from './Reporte';
+import { toast } from 'react-toastify';
+const serversAddr = require('../serversAddr');
 
 
 function PaperComponent(props) {
