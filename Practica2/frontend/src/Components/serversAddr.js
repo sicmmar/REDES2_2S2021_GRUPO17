@@ -1,6 +1,6 @@
 const serversAddr = {
     backend: {
-        host: 'balancer',
+        host: '192.168.57.254',
         port: '80'
     }
 };
