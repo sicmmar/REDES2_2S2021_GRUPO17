@@ -47,7 +47,7 @@ const Reportes = () => {
 
             vaciarListaOriginal();
 
-            list = JSON.parse(response);
+            const list = JSON.parse(response);
 
             list.forEach(element => {
                 listaOriginal.push(element);
