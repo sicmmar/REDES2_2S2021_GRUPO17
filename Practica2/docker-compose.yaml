@@ -39,8 +39,10 @@ services:
         volumes:
             - ./service/balancer/conf:/etc/nginx/conf.d
         networks:
-            - service_network
-            - frontend_network
+            service_network:
+              ipv4_address: 172.35.77.254
+            frontend_network:
+              ipv4_address: 192.168.57.254
 
     database:
         container_name: database

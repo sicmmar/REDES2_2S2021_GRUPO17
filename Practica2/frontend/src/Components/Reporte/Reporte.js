@@ -63,8 +63,8 @@ const Reporte = ({ reporte}) => {
       setValues({
         carnet: reporte.Carnet,
         name: reporte.Nombre,
-        cursoProyecto: reporte.Proyecto,
-        cuerpo: reporte.Cuerpo,
+        cursoProyecto: reporte.Curso,
+        cuerpo: reporte.Mensaje,
         fecha: reporte.Fecha
       })
     }

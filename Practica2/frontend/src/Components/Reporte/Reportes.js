@@ -47,11 +47,12 @@ const Reportes = () => {
 
             vaciarListaOriginal();
 
-            const list = JSON.parse(response);
+            const list = response.data;
 
             list.forEach(element => {
                 listaOriginal.push(element);
             });
+            
             if (child1.current != null) {
                 child1.current.removeRow();
                 child1.current.agregar_datos(listaOriginal);
@@ -149,7 +150,7 @@ const Reportes = () => {
 }
 
 export default withRouter(Reportes);
-var headersTable = ["Carnet", "Nombre", "Proyecto", "Fecha", "Servidor"]
+var headersTable = ["Carnet", "Nombre", "Curso", "Fecha", "Servidor"]
 var procs = [
     { "Carnet": "201812499", "Nombre": "Fernando", "Proyecto": "DTT", "Fecha": "08/01/2021", "Servidor": 201612219 },
     { "Carnet": "201824198", "Nombre": "Carlos", "Proyecto": "ECYS", "Fecha": "08/01/2022", "Servidor": 201612499 },
