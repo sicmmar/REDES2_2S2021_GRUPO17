@@ -269,6 +269,13 @@ databaseNetwork:
         ipam:
             config:
                 - subnet: 10.10.17.0/24
+frontend_network:
+        #tipo de driver "bridge"
+        driver: "bridge"
+        #configurar la red a utilizar con su máscara de red
+        ipam:
+            config:
+                - subnet: 192.168.57.0/24
 ```
 
 ## Definición de servicios
@@ -359,24 +366,4 @@ server1:
         # la red a la que estará conectado el contenedor
         networks:
             - frontend_network
-
-#Se definen las redes con las que trabajaremos
-networks:
-    service_network:
-    #definimos el tipo de driver para la red
-        driver: "bridge"
-        ipam:
-            config:
-            #se define el segmento de red
-                - subnet: 172.35.77.0/24
-    db_network:
-        driver: "bridge"
-        ipam:
-            config:
-                - subnet: 10.10.17.0/24
-    frontend_network:
-        driver: "bridge"
-        ipam:
-            config:
-                - subnet: 192.168.57.0/24
 ```
