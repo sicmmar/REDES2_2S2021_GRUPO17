@@ -23,12 +23,13 @@ def result():
 
 @app.route('/', methods=['POST'])
 def ingresar():
+    day = date.today()
     respuesta = collection.insert_one(
         {
             "Carnet": request.json.get('carnet'),
             "Nombre": request.json.get('nombre'),
             "Curso": request.json.get('curso'),
-            "Fecha": date.today(),
+            "Fecha": day.strftime("%d/%m/%Y"),
             "Mensaje": request.json.get('mensaje'),
             "Servidor": os.environ['SERVER'] 
         }
