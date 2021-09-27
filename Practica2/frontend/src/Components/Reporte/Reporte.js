@@ -8,7 +8,6 @@ import { Form, FormGroup, Label } from 'reactstrap';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from "@rmwc/button";
-import { CircularProgress } from "@rmwc/circular-progress";
 import clsx from 'clsx';
 import Collapse from '@material-ui/core/Collapse';
 import '@rmwc/typography/styles';
@@ -187,7 +186,7 @@ const Reporte = ({ reporte}) => {
                   {reporte.isReport === "true" ?
                     <div className={classes.centrarContenido}>
                       <Collapse in={!activarBotonGuardar}>
-                        <Button style={{ fontWeight: 'bold' }} label=" ...Enviando" icon={<CircularProgress />} />
+                        <Button style={{ fontWeight: 'bold' }} label=" ...Enviando"/>
                       </Collapse>
                       <Collapse in={activarBotonGuardar}>
                         <Button

@@ -47,7 +47,9 @@ const Reportes = () => {
 
             vaciarListaOriginal();
 
-            response.forEach(element => {
+            list = JSON.parse(response);
+
+            list.forEach(element => {
                 listaOriginal.push(element);
             });
             if (child1.current != null) {
