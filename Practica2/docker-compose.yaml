@@ -1,0 +1,85 @@
+version : "3.7"
+services:
+    server1:
+        container_name: server1
+        restart: always
+        build: ./service/server
+        environment:
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
+            - SERVER=200113057
+        networks:
+            - service_network
+            - db_network
+
+    server2:
+        container_name: server2
+        restart: always
+        build: ./service/server
+        environment:
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
+            - SERVER=201313828
+        networks:
+            - service_network
+            - db_network
+
+    server3:
+        container_name: server3
+        restart: always
+        build: ./service/server
+        environment:
+            - URI_MONGO=mongodb://grupo17:grupo17@database:27017
+            - SERVER=201612101
+        networks:
+            - service_network
+            - db_network
+
+    balancer:
+        container_name: balancer
+        image: nginx
+        volumes:
+            - ./service/balancer/conf:/etc/nginx/conf.d
+        networks:
+            service_network:
+              ipv4_address: 172.35.77.254
+            frontend_network:
+              ipv4_address: 192.168.57.254
+
+    database:
+        container_name: database
+        image : mongo        
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - MONGO_INITDB_ROOT_USERNAME=grupo17
+            - MONGO_INITDB_ROOT_PASSWORD=grupo17
+        restart: unless-stopped
+        networks:
+            - db_network
+    
+    frontend:
+        container_name: frontend
+        restart: always
+        build: ./frontend
+        ports:
+            - 80:3000
+        networks:
+            - frontend_network
+        
+    
+
+networks:
+    service_network:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 172.35.77.0/24
+    db_network:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 10.10.17.0/24
+    frontend_network:
+        driver: "bridge"
+        ipam:
+            config:
+                - subnet: 192.168.57.0/24
