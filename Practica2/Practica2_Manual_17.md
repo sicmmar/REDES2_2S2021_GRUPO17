@@ -19,15 +19,20 @@ Integrantes
 
 # Tabla de Contenido
 
-* [Servidor](#servidor)
-    * [Desarrollo](#desarrollo-servidor)
-        * [Insertar registro](#insertar-registro)
-        * [Obtener registros](#obtener-registros)
-    * [Dockerfile](#dockerfile-servidor)
-* [Load Balancer (nginx)](#load-balancer)
-* [Docker Compose](#docker-compose)
-    * [Definición de redes](#definición-de-redes)
-    * [Definición de servicios](#definición-de-servicios)
+- [Manual Técnico](#manual-técnico)
+  - [Grupo 17](#grupo-17)
+- [Tabla de Contenido](#tabla-de-contenido)
+- [Servidor](#servidor)
+  - [Desarrollo servidor](#desarrollo-servidor)
+    - [Insertar registro](#insertar-registro)
+    - [Obtener registros](#obtener-registros)
+  - [Dockerfile servidor](#dockerfile-servidor)
+- [Base de Datos](#base-de-datos)
+- [Load Balancer](#load-balancer)
+- [FrontEnd](#frontend)
+- [Docker Compose](#docker-compose)
+  - [Definición de redes](#definición-de-redes)
+  - [Definición de servicios](#definición-de-servicios)
 
 # Servidor
 
@@ -216,6 +221,27 @@ server {
 }
 ```
 
+# FrontEnd
+
+Se construye la imagen del FrontEnd para esto hacemos uso de la imagen de node en su version 12-alpine
+
+```yaml
+#Definimos la imagen base a utilizar
+FROM node:12-alpine
+
+#Definimos nuestro directorio de trabajo
+WORKDIR /usr/src/app
+ARG NODE_ENV
+ENV NODE_ENV $NODE_ENV
+
+# Instalamos las dependencias para nuestra aplicación
+COPY package.json /usr/src/app/
+RUN npm install
+COPY . /usr/src/app
+
+CMD ["npm", "start" ]
+```
+
 # Docker Compose
 
 El archivo [docker-compose.yaml](docker-compose.yaml) se utiliza para levantar todos los contenedores mencionados, conectar entre los que sea necesario y crear las tres diferentes redes.
@@ -243,6 +269,13 @@ databaseNetwork:
         ipam:
             config:
                 - subnet: 10.10.17.0/24
+frontend_network:
+        #tipo de driver "bridge"
+        driver: "bridge"
+        #configurar la red a utilizar con su máscara de red
+        ipam:
+            config:
+                - subnet: 192.168.57.0/24
 ```
 
 ## Definición de servicios
@@ -301,7 +334,10 @@ server1:
         volumes:
             - ./service/balancer/conf:/etc/nginx/conf.d
         networks:
-            - backendNetwork
+            service_network:
+              ipv4_address: 172.35.77.254
+            frontend_network:
+              ipv4_address: 192.168.57.254
     
     database:
         container_name: database
@@ -317,4 +353,17 @@ server1:
         # la red a la que estará conectado el contenedor
         networks:
             - databaseNetwork
+
+
+    frontend:
+        container_name: frontend
+        restart: always
+        # dirección donde se encuentra Dockerfile para construir la imagen
+        build: ./frontend
+        # Mapeamos el puerto 3000 al puerto 80
+        ports:
+            - 80:3000
+        # la red a la que estará conectado el contenedor
+        networks:
+            - frontend_network
 ```

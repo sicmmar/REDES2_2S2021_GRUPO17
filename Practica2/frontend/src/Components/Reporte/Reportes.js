@@ -47,11 +47,12 @@ const Reportes = () => {
 
             vaciarListaOriginal();
 
-            list = JSON.parse(response);
+            const list = response.data;
 
             list.forEach(element => {
                 listaOriginal.push(element);
             });
+            
             if (child1.current != null) {
                 child1.current.removeRow();
                 child1.current.agregar_datos(listaOriginal);
@@ -82,13 +83,33 @@ const Reportes = () => {
     const handleClick = (event) => {
         event.preventDefault()
 
-        let filtered = listaOriginal.filter(function (el) {
-            return el.Carnet.includes(filtro)
+        const endpoint = 'http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/';
+        axios.put(endpoint, {})
+        .then((response) => {
+
+            vaciarListaOriginal();
+
+            const list = response.data;
+
+            list.forEach(element => {
+                listaOriginal.push(element);
+            });
+
+        })
+        .catch((err) => {
+            toast.error("v( ‘.’ )v", { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
+            console.log('Error en el request al endpoint ' + endpoint);
+            console.log(err);
+        }).finally(()=> {
+            let filtered = listaOriginal.filter(function (el) {
+                return el.Carnet.includes(filtro)
+            });
+            if (child1.current != null) {
+                child1.current.removeRow();
+                child1.current.agregar_datos(filtered);
+            }
         });
-        if (child1.current != null) {
-            child1.current.removeRow();
-            child1.current.agregar_datos(filtered);
-        }
+        
     };
 
     const showReport = (data) => {
@@ -149,7 +170,7 @@ const Reportes = () => {
 }
 
 export default withRouter(Reportes);
-var headersTable = ["Carnet", "Nombre", "Proyecto", "Fecha", "Servidor"]
+var headersTable = ["Carnet", "Nombre", "Curso", "Fecha", "Servidor"]
 var procs = [
     { "Carnet": "201812499", "Nombre": "Fernando", "Proyecto": "DTT", "Fecha": "08/01/2021", "Servidor": 201612219 },
     { "Carnet": "201824198", "Nombre": "Carlos", "Proyecto": "ECYS", "Fecha": "08/01/2022", "Servidor": 201612499 },

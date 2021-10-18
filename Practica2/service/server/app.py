@@ -2,6 +2,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
+from datetime import date
 import os
 
 app = Flask(__name__)
@@ -22,13 +23,15 @@ def result():
 
 @app.route('/', methods=['POST'])
 def ingresar():
+    day = date.today()
     respuesta = collection.insert_one(
         {
-            "carnet": request.json.get('carnet'),
-            "nombre": request.json.get('nombre'),
-            "curso": request.json.get('curso'),
-            "mensaje": request.json.get('mensaje'),
-            "servidor": os.environ['SERVER'] 
+            "Carnet": request.json.get('carnet'),
+            "Nombre": request.json.get('nombre'),
+            "Curso": request.json.get('curso'),
+            "Fecha": day.strftime("%d/%m/%Y"),
+            "Mensaje": request.json.get('mensaje'),
+            "Servidor": os.environ['SERVER'] 
         }
     )
     if respuesta: return jsonify({'status': 200, 'mensaje': 'mensaje guardado'})
