@@ -9,4 +9,4 @@ RUN pip install "pymongo[srv]"
 RUN pip install boto3
 RUN pip install uuid
 EXPOSE 7050
-CMD python app.py
+#CMD python app.py

@@ -10,8 +10,8 @@ app = Flask(__name__)
 CORS(app) 
 
 # Conectar a mongo
-client = MongoClient("mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-#client = MongoClient(os.environ['URI_MONGO'])
+#client = MongoClient("mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+client = MongoClient(os.environ['URI_MONGO'])
 
 # Seleccionar base de datos y coleccion
 db = client['redes2']
@@ -38,12 +38,12 @@ def ingresar():
     
     respuesta = collection.insert_one(
         {
-            "Carnet": request.json.get('carnet'),
-            "Nombre": request.json.get('nombre'),
-            "Curso": request.json.get('curso'),
-            "Fecha": day.strftime("%d/%m/%Y"),
-            "Mensaje": request.json.get('mensaje'),
-            "Servidor": os.environ['SERVER'] 
+            "carnet": request.json.get('carnet'),
+            "nombre": request.json.get('nombre'),
+            "curso": request.json.get('curso'),
+            "fecha": day.strftime("%d/%m/%Y"),
+            "mensaje": request.json.get('mensaje'),
+            "servidor": os.environ['SERVER'] 
         }
     )
     if respuesta: return jsonify({'status': 200, 'server': os.environ['SERVER']})
@@ -106,11 +106,13 @@ def retornar_asistencia():
     res = {}
 
     if carnet:
-        res = collection.find({"carnet": carnet}, {"_id": False})
+        res = collect_asistencia.find({"carnet": carnet}, {"_id": False})
+
     elif idEvento:
-        res = collection.find({"idEvento": idEvento}, {"_id": False})
+        res = collect_asistencia.find({"idEvento": idEvento}, {"_id": False})
+
     else:
-        res = collection.find({}, {"_id": False})
+        res = collect_asistencia.find({}, {"_id": False})
 
     for i in res:
         arr.append(i)
@@ -118,4 +120,4 @@ def retornar_asistencia():
     return jsonify({"listado": arr, "server": os.environ['SERVER']})
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=7050)
+    app.run(host="0.0.0.0", port=7050, use_reloader=True)
