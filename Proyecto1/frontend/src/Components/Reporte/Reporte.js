@@ -57,11 +57,11 @@ const Reporte = ({ reporte }) => {
   useEffect(() => {
     if (reporte.isReport === "false") {
       setValues({
-        carnet: reporte.Carnet,
-        name: reporte.Nombre,
-        cursoProyecto: reporte.Curso,
-        cuerpo: reporte.Mensaje,
-        fecha: reporte.Fecha
+        carnet: reporte.carnet,
+        name: reporte.nombre,
+        cursoProyecto: reporte.curso,
+        cuerpo: reporte.mensaje,
+        fecha: reporte.fecha
       })
       setServer(reporte.server)
     }
