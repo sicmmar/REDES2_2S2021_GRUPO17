@@ -208,7 +208,7 @@ const Asistencia = ({ asistencia }) => {
                                                 </Button>
                                             </Box>
                                         </div>
-                                        : <h4><h4>Solicitud atendida por el server: {server}</h4></h4>
+                                        : <h4 style={{textAlign: "center"}}>Atendió Server: {server}</h4>
                                     }
                                 </FormGroup>
                             </Form>

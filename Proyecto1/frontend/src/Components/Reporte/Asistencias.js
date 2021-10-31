@@ -138,7 +138,7 @@ const Asistencias = ( {asistencia} ) => {
                     </form>
                     <div className="table-responsive" style={{ marginTop: "25px"}}>
                         <Table data={headersTable} ref={child1} handleClick={showReport}/>
-                        <h4>Solicitud atendida por el server: {server}</h4>
+                        <h4>La Solicitud fue atendida por el Servidor: {server}</h4>
                     </div>
                 </div>
             </div>
@@ -167,4 +167,4 @@ const Asistencias = ( {asistencia} ) => {
 }
 
 export default withRouter(Asistencias);
-var headersTable = ["carnet", "name", "eventName", "idEvento"]
+var headersTable = ["carnet", "name", "eventName", "idEvento", "server"]
