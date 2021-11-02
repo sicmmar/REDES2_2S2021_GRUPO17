@@ -1,7 +1,7 @@
 const serversAddr = {
     backend: {
-        host: '192.168.57.254',
-        port: '80'
+        host: 'localhost',
+        port: '7050'
     }
 };
 

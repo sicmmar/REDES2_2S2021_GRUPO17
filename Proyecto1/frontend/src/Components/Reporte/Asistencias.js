@@ -25,7 +25,7 @@ function PaperComponent(props) {
     );
 }
 
-const Asistencias = ( asistencia ) => {
+const Asistencias = ( {asistencia} ) => {
 
     const child1 = useRef();
     const [filtro, setFiltro] = useState('');
@@ -42,7 +42,7 @@ const Asistencias = ( asistencia ) => {
     useEffect(() => {
         // Aqui la peticion para obtener el listado de proyectos y asignarlos como se hace abajo con el ejemplo
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencias', {})
+        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {})
         .then((response) => {
             vaciarListaOriginal();
             setServer(response.data.server);
@@ -67,20 +67,17 @@ const Asistencias = ( asistencia ) => {
     const handleClickEvento = (event) => {
         event.preventDefault()
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/', {})
+        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {idEvento: filtro})
         .then((response) => {
-
             vaciarListaOriginal();
-            const list = response.data;
+            setServer(response.data.server);
+            const list = response.data.listado;
             list.forEach(element => {
                 listaOriginal.push(element);
             });
-            let filtered = listaOriginal.filter(function (el) {
-                return el.eventName.includes(filtro)
-            });
             if (child1.current != null) {
                 child1.current.removeRow();
-                child1.current.agregar_datos(filtered);
+                child1.current.agregar_datos(listaOriginal);
             }
         }).catch((err) => {
             toast.error("Error: " + err , { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
@@ -89,20 +86,17 @@ const Asistencias = ( asistencia ) => {
     const handleClickAlumno = (event) => {
         event.preventDefault()
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/', {})
+        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {carnet: filtro})
         .then((response) => {
-
             vaciarListaOriginal();
-            const list = response.data;
+            setServer(response.data.server);
+            const list = response.data.listado;
             list.forEach(element => {
                 listaOriginal.push(element);
             });
-            let filtered = listaOriginal.filter(function (el) {
-                return el.Carnet.includes(filtro)
-            });
             if (child1.current != null) {
                 child1.current.removeRow();
-                child1.current.agregar_datos(filtered);
+                child1.current.agregar_datos(listaOriginal);
             }
         }).catch((err) => {
             toast.error("Error: " + err , { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
@@ -136,7 +130,7 @@ const Asistencias = ( asistencia ) => {
                       style={{width: "90%", height: "55px"}}
                       variant="outlined"
                     />
-                    {asistencia.isEvento === "false" ?
+                    {asistencia.isEvento !== "false" ?
                         <button className ="btn btn-secondary my-2 my-sm-0" type ="submit" style={{height: "55px", width: "10%"}} onClick={handleClickEvento}>Search</button>
                         :
                         <button className ="btn btn-secondary my-2 my-sm-0" type ="submit" style={{height: "55px", width: "10%"}} onClick={handleClickAlumno}>Search</button>
@@ -144,7 +138,7 @@ const Asistencias = ( asistencia ) => {
                     </form>
                     <div className="table-responsive" style={{ marginTop: "25px"}}>
                         <Table data={headersTable} ref={child1} handleClick={showReport}/>
-                        <h4>Solicitud atendida por el server: {server}</h4>
+                        <h4>La Solicitud fue atendida por el Servidor: {server}</h4>
                     </div>
                 </div>
             </div>
@@ -173,4 +167,4 @@ const Asistencias = ( asistencia ) => {
 }
 
 export default withRouter(Asistencias);
-var headersTable = ["carnet", "name", "eventName", "idEvento"]
+var headersTable = ["carnet", "name", "eventName", "idEvento", "server"]

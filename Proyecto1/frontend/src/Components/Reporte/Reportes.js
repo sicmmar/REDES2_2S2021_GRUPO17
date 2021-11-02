@@ -68,20 +68,17 @@ const Reportes = () => {
     const handleClick = (event) => {
         event.preventDefault()
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/reportes', {})
+        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/', {carnet: filtro})
         .then((response) => {
-
             vaciarListaOriginal();
-            const list = response.data;
+            setServer(response.data.server);
+            const list = response.data.listado;
             list.forEach(element => {
                 listaOriginal.push(element);
             });
-            let filtered = listaOriginal.filter(function (el) {
-                return el.Carnet.includes(filtro)
-            });
             if (child1.current != null) {
                 child1.current.removeRow();
-                child1.current.agregar_datos(filtered);
+                child1.current.agregar_datos(listaOriginal);
             }
         }).catch((err) => {
             toast.error('Error: ' + err, { position: toast.POSITION.TOP_RIGHT, autoClose: 5000 });
@@ -120,7 +117,7 @@ const Reportes = () => {
                     </form>
                     <div className="table-responsive" style={{ marginTop: "25px"}}>
                         <Table data={headersTable} ref={child1} handleClick={showReport}/>
-                        <h4>Solicitud atendida por el server: {server}</h4>
+                        <h4>La Solicitud fue atendida por el Servidor: {server}</h4>
                     </div>
                 </div>
             </div>
@@ -149,4 +146,4 @@ const Reportes = () => {
 }
 
 export default withRouter(Reportes);
-var headersTable = ["Carnet", "Nombre", "Curso", "Fecha", "Servidor"]
+var headersTable = ["carnet", "curso", "fecha", "nombre", "servidor"]

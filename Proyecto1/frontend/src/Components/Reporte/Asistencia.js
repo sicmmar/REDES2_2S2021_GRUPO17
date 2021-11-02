@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 const Asistencia = ({ asistencia }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [server, setServer] = useState(202112209);
+    const [imagenReporte, setImagenReporte] = useState("https://i.ytimg.com/vi/qy3g9q7K58Y/hqdefault.jpg");
 
     const classes = useStyles();
     const [valuesUser, setValues] = useState({
@@ -73,6 +74,7 @@ const Asistencia = ({ asistencia }) => {
                 idEvento: asistencia.idEvento
             })
             setServer(asistencia.server)
+            setImagenReporte(asistencia.image)
         }
     }, []);
 
@@ -108,7 +110,7 @@ const Asistencia = ({ asistencia }) => {
         if (valido) {
             await getBase64(selectedFile).then(
                 data => {
-                    axios.post('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/existUser', {
+                    axios.post('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {
                         carnet: valuesUser.carnet,
                         name: valuesUser.name,
                         eventName: valuesUser.eventName,
@@ -137,6 +139,12 @@ const Asistencia = ({ asistencia }) => {
                         <Box display="flex" justifyContent="center" p={1} flexGrow={1} bgcolor="#F7F7EF">
                             <Form onSubmit={handleClick}>
                                 <FormGroup>
+                                    {asistencia.isReport !== "true" ?
+                                    <Box className={clsx(classes.margin, classes.textField)}>
+                                        <img width='100%' src={imagenReporte} alt="MDN" />
+                                    </Box>
+                                    :null
+                                    }
                                     <Box>
                                         <TextField
                                             label="Carnet"
@@ -200,7 +208,7 @@ const Asistencia = ({ asistencia }) => {
                                                 </Button>
                                             </Box>
                                         </div>
-                                        : <h4><h4>Solicitud atendida por el server: {server}</h4></h4>
+                                        : <h4 style={{textAlign: "center"}}>Atendió Server: {server}</h4>
                                     }
                                 </FormGroup>
                             </Form>
