@@ -1,0 +1,15 @@
+version : "3.7"
+services:
+    server:
+        container_name: server
+        restart: always
+        build: .
+        ports:
+            - 7050:7050
+        environment:
+            #- URI_MONGO=mongodb+srv://ayd2_g8DB:654ayd321@cluster0.hmz3g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+            #- URI_MONGO=mongodb://grupo17:grupo17@10.10.2.10:27017
+            - SERVER=200113057
+            - SKEY=QAaOh5Q7UQg0WDIHaK1evl
+        command:
+          python app.py
