@@ -29,6 +29,8 @@ Integrantes
         - [Insertar asistencia](#insertar-asistencia)
         - [Obtener asistencias](#obtener-asistencias)
     - [Dockerfile servidor](#dockerfile-servidor)
+- [Base de datos](#base-de-datos)
+- [Dominio y configuracion DNS](#dominio-y-configuracion-dns)
 - [Certificado HTTPS](#certificado-https)
 
 # Servidor
@@ -303,6 +305,43 @@ RUN pip install uuid
 #exponer el puerto 7050 del contenedor
 EXPOSE 7050
 ```
+# Base de datos
+Como motor de base de datos fue usado MongoDB [<img src="img/mongodb_logo_icon.svg" width="35"/>](img/mongodb_logo_icon.svg), con la [imágen](https://hub.docker.com/_/mongo/) ubicada en docker hub como base.
+
+Para construir el docker container de MongoDB se uso el siguiente archivo docker-compose.yml.
+
+```yaml
+version: "3.8"
+services:
+  mongodb:
+    image : mongo
+    container_name: mongodb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MONGO_INITDB_ROOT_USERNAME=grupo17
+      - MONGO_INITDB_ROOT_PASSWORD=grupo17
+    volumes:
+      - ./database:/data/db
+    ports:
+      - 27017:27017
+    restart: unless-stopped
+```
+Las variables de entorno "MONGO_INITDB_ROOT_USERNAME" y "MONGO_INITDB_ROOT_PASSWORD" fueron usadas para definir el usuario y password para la autentificación al conectarse con la base de datos.
+# Dominio y configuracion DNS
+Se uso el domininio redes2grupo17.tk, obtenido por medio de la pagina freenom.
+Despues de registrado el dominio se procedio a la configuracion de registros DNS, para lo cual fueron usados los siguientes tipos registros:
+## A
+La "A" significa "address(direccion)" y es el tipo de registro DNS más basico, este indica la dirección IP de un determinado dominio.
+
+Fueron configurados los siguientes 4 registros tipo A:
+![](img/dns_tipoA.png)
+
+## CNAME
+El registro "canonical name(nombre canónico)" (CNAME) se utiliza en lugar de un registro A, cuando un dominio o subdominio es un alias de otro dominio. Todos los registros CNAME deben apuntar a un dominio, nunca a una dirección IP.
+
+Fueron configurados los siguientes 5 registros tipo CNAME:
+![](img/dns_tipoCNAME.png)
 
 # Certificado HTTPS
 

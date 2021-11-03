@@ -1,6 +1,6 @@
 const serversAddr = {
     backend: {
-        host: 'localhost',
+        host: 'api.redes2grupo17.tk',
         port: '7050'
     }
 };
