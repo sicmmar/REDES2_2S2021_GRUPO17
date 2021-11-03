@@ -110,7 +110,7 @@ const Asistencia = ({ asistencia }) => {
         if (valido) {
             await getBase64(selectedFile).then(
                 data => {
-                    axios.post('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {
+                    axios.post('https://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {
                         carnet: valuesUser.carnet,
                         name: valuesUser.name,
                         eventName: valuesUser.eventName,

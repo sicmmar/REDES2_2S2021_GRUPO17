@@ -42,7 +42,7 @@ const Asistencias = ( {asistencia} ) => {
     useEffect(() => {
         // Aqui la peticion para obtener el listado de proyectos y asignarlos como se hace abajo con el ejemplo
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {})
+        axios.put('https://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {})
         .then((response) => {
             vaciarListaOriginal();
             setServer(response.data.server);
@@ -67,7 +67,7 @@ const Asistencias = ( {asistencia} ) => {
     const handleClickEvento = (event) => {
         event.preventDefault()
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {idEvento: filtro})
+        axios.put('https://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {idEvento: filtro})
         .then((response) => {
             vaciarListaOriginal();
             setServer(response.data.server);
@@ -86,7 +86,7 @@ const Asistencias = ( {asistencia} ) => {
     const handleClickAlumno = (event) => {
         event.preventDefault()
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {carnet: filtro})
+        axios.put('https://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/asistencia', {carnet: filtro})
         .then((response) => {
             vaciarListaOriginal();
             setServer(response.data.server);

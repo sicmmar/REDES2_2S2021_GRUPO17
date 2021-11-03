@@ -42,7 +42,7 @@ const Reportes = () => {
     useEffect(() => {
         // Aqui la peticion para obtener el listado de proyectos y asignarlos como se hace abajo con el ejemplo
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/', {})
+        axios.put('https://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/', {})
         .then((response) => {
             vaciarListaOriginal();
             setServer(response.data.server);
@@ -68,7 +68,7 @@ const Reportes = () => {
     const handleClick = (event) => {
         event.preventDefault()
 
-        axios.put('http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/', {carnet: filtro})
+        axios.put('https://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/', {carnet: filtro})
         .then((response) => {
             vaciarListaOriginal();
             setServer(response.data.server);
