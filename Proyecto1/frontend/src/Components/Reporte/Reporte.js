@@ -90,7 +90,7 @@ const Reporte = ({ reporte }) => {
 
     if (valido) {
 
-      const endpoint = 'http://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/';
+      const endpoint = 'https://' + serversAddr.backend.host + ':' + serversAddr.backend.port + '/';
 
       axios.post(endpoint, { carnet: valuesUser.carnet, nombre: valuesUser.name, curso: valuesUser.cursoProyecto, mensaje: valuesUser.cuerpo })
         .then((result) => {
